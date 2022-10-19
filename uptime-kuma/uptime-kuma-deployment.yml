@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uptime
+  namespace: uptime
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uptime
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: uptime
+    spec:
+      volumes:
+        - name: uptime
+          persistentVolumeClaim:
+            claimName: uptime
+      containers:
+      - name: uptime
+        image: louislam/uptime-kuma:latest
+        ports:
+          - containerPort: 3001
+        volumeMounts:
+        - mountPath: "/app/data"
+          name: uptime

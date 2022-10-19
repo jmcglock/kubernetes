@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ghost-ingress
+  namespace: ghost
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`ghost.demo.com`)
+      kind: Rule
+      services:
+      - name: ghost-svc
+        namespace: ghost
+        port: 2368

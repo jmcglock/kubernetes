@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod-label: nextcloud-pod
+  template:
+    metadata:
+      labels:
+        pod-label: nextcloud-pod
+    spec:
+      containers:
+      - name: nextcloud
+        image: nextcloud:stable-apache
+        volumeMounts:
+        - name: server-storage
+          mountPath: /var/www/html
+          subPath: server-data
+      volumes:
+      - name: server-storage
+        persistentVolumeClaim:
+          claimName: nextcloud-shared-storage-claim

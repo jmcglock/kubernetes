@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: littlelink
+  namespace: littlelink
+  labels:
+    app: littlelink
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod-label: littlelink
+  template:
+    metadata:
+      labels:
+        pod-label: littlelink
+    spec:
+      containers:
+        - env:
+            - name: AVATAR_2X_URL
+              value: <URL TO YOUR AVATAR 2X>
+            - name: AVATAR_ALT
+              value: <ALT TEXT FOR AVATAR>
+            - name: AVATAR_URL
+              value: <URL TO YOUR AVATAR>
+            - name: BIO
+              value: <YOUR BIO>
+            - name: BUTTON_ORDER
+              value: YOUTUBE,GITHUB,LINKED,EMAIL
+            - name: BUTTON_TARGET
+              value: _blank
+            - name: CUSTOM_BUTTON_ALT_TEXT
+              value: <ALT TEXT FOR CUSTOM BUTTON>
+            - name: CUSTOM_BUTTON_COLOR
+              value: '#6a12eb,#6a12eb'
+            - name: CUSTOM_BUTTON_ICON
+              value: fas link,fab youtube
+            - name: CUSTOM_BUTTON_NAME
+              value: <NAME OF CUSTOM BUTTON>
+            - name: CUSTOM_BUTTON_TEXT
+              value: <TEXT FOR CUSTOM BUTTON>
+            - name: CUSTOM_BUTTON_TEXT_COLOR
+              value: '#ffffff,#ffffff'
+            - name: CUSTOM_BUTTON_URL
+              value: <URL FOR CUSTOM BUTTON>
+            - name: EMAIL
+              value: <YOUR EMAIL>
+            - name: EMAIL_TEXT
+              value: <TEXT FOR EMAIL BUTTON>
+            - name: FAVICON_URL
+              value: <URL TO YOUR FAVICON>
+            - name: GITHUB
+              value: <YOUR GITHUB URL>
+            - name: LANG
+              value: en
+            - name: LINKED_IN
+              value: <YOUR LINKED IN URL>
+            - name: META_AUTHOR
+              value: <AUTHOR NAME>
+            - name: META_DESCRIPTION
+              value: <DESCRIPTION>
+            - name: META_INDEX_STATUS
+              value: all
+            - name: META_TITLE
+              value: <TITLE>
+            - name: NAME
+              value: <YOUR NAME>
+            - name: THEME
+              value: Dark
+          image: ghcr.io/techno-tim/littlelink-server:latest
+          name: littlelink-server
+          ports:
+            - containerPort: 3000
+      restartPolicy: Always

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flame
+  namespace: flame
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+    spec:
+      containers:
+      - env:
+        - name: PASSWORD
+          value: "password"
+        image: pawelmalak/flame
+        imagePullPolicy: Always
+        name: flame
+        ports:
+        - containerPort: 5005
+          name: flame
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /app/data/
+          name: flame
+      restartPolicy: Always
+      volumes:
+      - name: flame
+        persistentVolumeClaim:
+          claimName: flame

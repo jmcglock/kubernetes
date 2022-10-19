@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: flame
+  namespace: flame
+spec:
+  ports:
+  - name: flame
+    port: 5005
+    protocol: TCP
+    targetPort: 5005
+  selector:
+    app: flame

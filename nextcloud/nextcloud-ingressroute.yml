@@ -1,0 +1,31 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nextcloud-web
+spec:
+  entryPoints:
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`test.com`) && PathPrefix(`/`)
+    services:
+    - name: nextcloud
+      namespace: nextcloud
+      port: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nextcloud-websecure
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`test.com`) && PathPrefix(`/`)
+    services:
+    - name: nextcloud
+      namespace: nextcloud
+      port: 8080
+  tls:
+    certResolver: dns-le

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smokeping
+  namespace: smokeping
+  labels:
+    app: smokeping
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod-label: smokeping
+  template:
+    metadata:
+      labels:
+        pod-label: smokeping
+    spec:
+      containers:
+      - name: smokeping
+        image: lscr.io/linuxserver/smokeping
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: America/New_York
+        volumeMounts:
+        - name: smokeping-pvc0
+          mountPath: /config
+        - name: smokeping-pvc1
+          mountPath: /data
+      volumes:
+        - name: smokeping-pvc0
+          persistentVolumeClaim:
+            claimName: smokeping-pvc0
+        - name: smokeping-pvc1
+          persistentVolumeClaim:
+            claimName: smokeping-pvc1

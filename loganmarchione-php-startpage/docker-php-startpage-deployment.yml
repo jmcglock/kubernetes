@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: startpage
+  namespace: startpage
+  labels:
+    app: startpage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod-label: startpage
+  template:
+    metadata:
+      labels:
+        pod-label: startpage
+    spec:
+      containers:
+      - name: startpage
+        image: loganmarchione/docker-php-startpage:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: startpage-pvc
+          mountPath: /var/www/html/user_includes
+      volumes:
+        - name: startpage-pvc
+          persistentVolumeClaim:
+            claimName: startpage-pvc
+# Thanks to loganmarchione for creating and maintaining this image: https://hub.docker.com/r/loganmarchione/docker-php-startpage

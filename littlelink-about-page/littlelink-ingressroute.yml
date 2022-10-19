@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: littlelink
+  namespace: littlelink
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`littlelink.com`)
+      kind: Rule
+      services:
+        - name: uptime
+          port: 8080

@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: flame
+  namespace: flame
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`demo.com`)
+      kind: Rule
+      services:
+        - name: flame
+          port: 5005
