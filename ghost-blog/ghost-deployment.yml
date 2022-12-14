@@ -2,9 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ghost
-  namespace: ghost
-  labels:
-    app: ghost
 spec:
   replicas: 1
   selector:
@@ -16,17 +13,20 @@ spec:
         app: ghost
     spec:
       containers:
-      - name: ghost-app
-        image: ghost
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 2368
+      - name: ghost
+        image: ghost:3.21.0-alpine
         env:
         - name: url
-          value: http://ghost.demo.com
+          value: https://www.example.com
+        - name: database__client
+          value: sqlite3
+        - name: database__connection__filename
+          value: /var/lib/ghost/content/data/ghost.db
+        ports:
+        - containerPort: 2368
         volumeMounts:
-        - mountPath: /var/lib/ghost/content
-          name: ghost-data
+        - name: ghost-data
+          mountPath: /var/lib/ghost/content/data
       volumes:
       - name: ghost-data
         persistentVolumeClaim:
