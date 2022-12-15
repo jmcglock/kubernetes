@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teamcity-agent
+  labels:
+    app: teamcity-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teamcity-agent
+  template:
+    metadata:
+      labels:
+        app: teamcity-agent
+    spec:
+      containers:
+      - name: teamcity-agent
+        image: jetbrains/teamcity-agent
+        env:
+        - name: SERVER_URL
+          value: "<TeamCity server URL>"
+        - name: AGENT_NAME
+          value: "<desired agent name>"
+        - name: AGENT_OWN_ADDRESS
+          value: "<IP address or hostname>"
