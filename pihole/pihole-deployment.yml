@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole
+  labels:
+    app: pihole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pihole
+  template:
+    metadata:
+      labels:
+        app: pihole
+    spec:
+      containers:
+      - name: pihole
+        image: pihole/pihole:latest
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 53
+          name: dns
+        env:
+        - name: TZ
+          value: America/New_York
+        volumeMounts:
+        - name: pihole-config
+          mountPath: /etc/pihole/
+      volumes:
+      - name: pihole-config
+        configMap:
+          name: pihole-config
+          items:
+          - key: pihole-config
+            path: pihole/setupVars.conf
