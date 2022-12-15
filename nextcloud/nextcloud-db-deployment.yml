@@ -1,33 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nextcloud-mysql
+  name: mysql
   labels:
-    app: nextcloud
+    app: mysql
 spec:
   replicas: 1
   selector:
     matchLabels:
-      pod-label: nextcloud-mysql-pod
+      app: mysql
   template:
     metadata:
       labels:
-        pod-label: nextcloud-mysql-pod
+        app: mysql
     spec:
       containers:
       - name: mysql
         image: mysql:latest
+        ports:
+        - containerPort: 3306
+          name: mysql
         env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "<root password>"
         - name: MYSQL_DATABASE
-          value: nextcloud
-        envFrom:
-        - secretRef:
-            name: nextcloud-mysql-secret
+          value: "<database name>"
+        - name: MYSQL_USER
+          value: "<database user>"
+        - name: MYSQL_PASSWORD
+          value: "<database password>"
         volumeMounts:
-        - name: db-storage
+        - name: mysql-data
           mountPath: /var/lib/mysql
-          subPath: mysql-data
       volumes:
-      - name: db-storage
+      - name: mysql-data
         persistentVolumeClaim:
-          claimName: nextcloud-shared-storage-claim
+          claimName: mysql-data-claim

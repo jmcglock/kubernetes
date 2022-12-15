@@ -8,20 +8,31 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      pod-label: nextcloud-pod
+      app: nextcloud
   template:
     metadata:
       labels:
-        pod-label: nextcloud-pod
+        app: nextcloud
     spec:
       containers:
       - name: nextcloud
-        image: nextcloud:stable-apache
+        image: nextcloud:latest
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: MYSQL_HOST
+          value: "<mysql hostname or IP>"
+        - name: MYSQL_USER
+          value: "<mysql username>"
+        - name: MYSQL_PASSWORD
+          value: "<mysql password>"
+        - name: MYSQL_DATABASE
+          value: "<mysql database name>"
         volumeMounts:
-        - name: server-storage
+        - name: nextcloud-data
           mountPath: /var/www/html
-          subPath: server-data
       volumes:
-      - name: server-storage
+      - name: nextcloud-data
         persistentVolumeClaim:
-          claimName: nextcloud-shared-storage-claim
+          claimName: nextcloud-data-claim
