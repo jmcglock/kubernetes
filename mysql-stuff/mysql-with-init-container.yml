@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-database
+spec:
+  initContainers:
+  - name: init-mysql
+    image: mysql:5.7
+    command:
+      - sh
+      - -c
+      - |
+        # Download the dump file from an external location
+        wget https://my-object-storage/daily-dump.sql.gz
+        # Uncompress the dump file
+        gunzip daily-dump.sql.gz
+        # Restore the database
+        mysql -h mysql -u root -p${MYSQL_ROOT_PASSWORD} < daily-dump.sql
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: mysql-root-password
+          key: password
+  containers:
+  - name: mysql
+    image: mysql:5.7
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: mysql-root-password
+          key: password
+    volumeMounts:
+    - name: mysql-persistent-storage
+      mountPath: /var/lib/mysql
+  volumes:
+  - name: mysql-persistent-storage
+    persistentVolumeClaim:
+      claimName: mysql-pv-claim
