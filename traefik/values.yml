@@ -1,0 +1,45 @@
+globalArguments:
+  - '--global.checknewversion=false'
+  - '--global.sendanonymoususage=false'
+
+additionalArguments:
+  - '--serversTransport.insecureSkipVerify=true'
+  - '--log.level=INFO'
+
+deployment:
+  enabled: true
+  replicas: 1
+  annotations: {}
+  podAnnotations: {}
+  additionalContainers: []
+  initContainers: []
+
+ports:
+  web:
+    redirectTo: websecure
+  websecure:
+    tls:
+      enabled: true
+
+ingressRoute:
+  dashboard:
+    enabled: true
+
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: traefik-external
+  kubernetesIngress:
+    enabled: true 
+    publishedService:
+      enabled: false 
+
+service:
+  enabled: true 
+  type: LoadBalancer
+  annotations: {}
+  labels: {}
+  spec:
+    loadBalancerIP: <YOUR LB IP>
+  loadBalancerSourceRanges: []
+  externalIPs: []
