@@ -1,0 +1,23 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: demo
+  namespace: default
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`www.demo.local.test.com`)
+      kind: Rule
+      services:
+        - name: demo
+          port: 80
+    - match: Host(`demo.local.test.com`)
+      kind: Rule
+      services:
+        - name: demo
+          port: 80
+      middlewares:
+        - name: default-headers
