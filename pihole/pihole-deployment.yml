@@ -1,29 +1,31 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: pihole
+  labels:
+    app: pihole
 spec:
-  containers:
-  - name: pihole
-    image: pihole/pihole:latest
-    ports:
-    - containerPort: 80
-      protocol: TCP
-    - containerPort: 53
-      protocol: UDP
-    - containerPort: 53
-      protocol: TCP
-    env:
-    - name: TZ
-      value: America/New_York
-    - name: WEBPASSWORD
-      value: mypassword
-    - name: ServerIP
-      value: 1.2.3.4
-    volumeMounts:
-    - name: pihole-config
-      mountPath: /etc/pihole/
-  volumes:
-  - name: pihole-config
-    hostPath:
-      path: /path/to/pihole/config
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pihole
+  template:
+    metadata:
+      labels:
+        app: pihole
+    spec:
+      containers:
+      - name: pihole
+        image: pihole:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 53
+          protocol: UDP
+        - containerPort: 53
+          protocol: TCP
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 443
+          protocol: TCP
+        securityContext:
+          privileged: true
