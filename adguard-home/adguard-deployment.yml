@@ -27,7 +27,10 @@ spec:
           name: dns
           protocol: UDP
         - containerPort: 3000
+          name: http-initial
+        - containerPort: 80
           name: http
+          protocol: TCP
         volumeMounts:
         - name: adguard-data
           mountPath: /opt/adguardhome/work
