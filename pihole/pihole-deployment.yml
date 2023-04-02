@@ -1,9 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pihole
-  labels:
-    app: pihole
+  name: pihole-deployment
 spec:
   replicas: 1
   selector:
@@ -16,14 +14,39 @@ spec:
     spec:
       containers:
       - name: pihole
-        image: pihole:latest
-        imagePullPolicy: Always
+        image: pihole/pihole:latest
         ports:
+        - containerPort: 80
         - containerPort: 53
           protocol: UDP
-        - containerPort: 53
-          protocol: TCP
-        - containerPort: 80
-          protocol: TCP
-        - containerPort: 443
-          protocol: TCP
+        environment:
+        - name: ServerIP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: TZ
+          value: "America/Los_Angeles"
+        - name: DNS1
+          value: "8.8.8.8"
+        - name: DNS2
+          value: "8.8.4.4"
+        - name: WEBPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pihole-webpassword
+              key: password
+        volumeMounts:
+        - name: dnsmasq-etc-volume
+          mountPath: /etc/dnsmasq.d/
+        - name: pihole-persist-data
+          mountPath: /etc/pihole/
+      volumes:
+      - name: dnsmasq-etc-volume
+        configMap:
+          name: pihole-dnsmasq-cm
+          items:
+          - key: dnsmasq.conf
+            path: dnsmasq.conf
+      - name: pihole-persist-data
+        persistentVolumeClaim:
+          claimName: pihole-pvc
