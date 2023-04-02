@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguardhome-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adguardhome
+  template:
+    metadata:
+      labels:
+        app: adguardhome
+    spec:
+      containers:
+      - name: adguardhome
+        image: adguard/adguardhome:latest
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        - containerPort: 53
+          protocol: UDP
+        env:
+        - name: DNS_UPSTREAM
+          value: "https://dns.google/dns-query"
+        - name: TZ
+          value: "America/Los_Angeles"
+        - name: AGH_ARGS
+          value: "-a 0.0.0.0:80 --tls-port 443 --dns-port 53 --no-check-update"
