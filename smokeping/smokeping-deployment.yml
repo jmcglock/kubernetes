@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smokeping
+  namespace: default
+  labels:
+    app: smokeping
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smokeping
+  template:
+    metadata:
+      labels:
+        app: smokeping
+    spec:
+      containers:
+      - name: smokeping
+        image: linuxserver/smokeping
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: "America/New_York"
+        volumeMounts:
+        - name: smokeping-pvc
+          mountPath: /data
+      volumes:
+        - name: smokeping-pvc
+          persistentVolumeClaim:
+            claimName: smokeping-pvc

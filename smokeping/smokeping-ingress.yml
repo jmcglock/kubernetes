@@ -1,0 +1,25 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: smokeping
+  namespace: default
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`www.local.test.com`)
+      kind: Rule
+      services:
+        - name: smokeping
+          port: 80
+    - match: Host(`local.test.com`)
+      kind: Rule
+      services:
+        - name: smokeping
+          port: 80
+      middlewares:
+        - name: default-headers
+  tls:
+    secretName: local-test-com-tls
