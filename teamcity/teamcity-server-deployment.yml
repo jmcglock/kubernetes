@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: teamcity-server
-  labels:
-    app: teamcity-server
 spec:
   replicas: 1
   selector:
@@ -16,17 +14,13 @@ spec:
     spec:
       containers:
       - name: teamcity-server
-        image: jetbrains/teamcity-server
+        image: jetbrains/teamcity-server:latest
         ports:
         - containerPort: 8111
-          name: http
-        env:
-        - name: TEAMCITY_SERVER_MEM_OPTS
-          value: "-Xmx1024m -XX:MaxMetaspaceSize=250m"
         volumeMounts:
-        - name: teamcity-data
+        - name: teamcity-server-data
           mountPath: /data/teamcity_server/datadir
       volumes:
-      - name: teamcity-data
+      - name: teamcity-server-data
         persistentVolumeClaim:
-          claimName: teamcity-data-claim
+          claimName: teamcity-server-pvc

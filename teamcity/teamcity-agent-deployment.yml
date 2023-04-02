@@ -2,10 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: teamcity-agent
-  labels:
-    app: teamcity-agent
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: teamcity-agent
@@ -16,11 +14,21 @@ spec:
     spec:
       containers:
       - name: teamcity-agent
-        image: jetbrains/teamcity-agent
+        image: jetbrains/teamcity-agent:latest
         env:
         - name: SERVER_URL
-          value: "<TeamCity server URL>"
-        - name: AGENT_NAME
-          value: "<desired agent name>"
-        - name: AGENT_OWN_ADDRESS
-          value: "<IP address or hostname>"
+          value: http://teamcity-server:8111
+        volumeMounts:
+        - name: teamcity-agent-config
+          mountPath: /data/teamcity_agent/conf
+        - name: teamcity-agent-logs
+          mountPath: /data/teamcity_agent/logs
+        - name: teamcity-agent-temp
+          mountPath: /data/teamcity_agent/temp
+      volumes:
+      - name: teamcity-agent-config
+        emptyDir: {}
+      - name: teamcity-agent-logs
+        emptyDir: {}
+      - name: teamcity-agent-temp
+        emptyDir: {}
