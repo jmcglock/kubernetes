@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-pod-with-init-container
+  labels:
+    app: mysql
+spec:
+  initContainers:
+  - name: init-mysql
+    image: mysql:latest
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: my-root-password
+    - name: MYSQL_DATABASE
+      value: my-database
+    - name: MYSQL_USER
+      value: my-user
+    - name: MYSQL_PASSWORD
+      value: my-password
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      /usr/bin/mysql -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
+      /usr/bin/mysql -h 127.0.0.1 -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';"
+  containers:
+  - name: mysql
+    image: mysql:latest
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: my-root-password
+    - name: MYSQL_DATABASE
+      value: my-database
+    - name: MYSQL_USER
+      value: my-user
+    - name: MYSQL_PASSWORD
+      value: my-password
+    ports:
+    - containerPort: 3306
+    volumeMounts:
+    - name: mysql-persistent-storage
+      mountPath: /var/lib/mysql
+  volumes:
+  - name: mysql-persistent-storage
+    persistentVolumeClaim:
+      claimName: mysql-pvc
