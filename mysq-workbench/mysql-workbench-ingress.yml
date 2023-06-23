@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mysql-workbench
+  namespace: mysql-workbench
+spec:
+  entryPoints:
+  - web
+  routes:
+    - match: Host(`mysql-workbench.test.com`)
+      kind: Rule
+      middlewares:
+      - name: auth
+        namespace: mysql-workbench
+      services:
+        - name: mysql-workbench
+          port: 3000

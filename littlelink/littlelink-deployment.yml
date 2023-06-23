@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: littlelink
+  namespace: littlelink
+  labels:
+    app: littlelink
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod-label: littlelink
+  template:
+    metadata:
+      labels:
+        pod-label: littlelink
+    spec:
+      containers:
+        - env:
+            - name: AVATAR_2X_URL
+              value: <your avatar url>
+            - name: AVATAR_ALT
+              value: <
+            - name: AVATAR_URL
+              value: <your avatar url>
+            - name: META_DESCRIPTION
+              value: <your description>
+            - name: BIO
+              value: <your bio>
+            - name: BUTTON_ORDER
+              value: YOUTUBE,GITHUB,LINKED,EMAIL
+            - name: BUTTON_TARGET
+              value: blank
+            - name: CUSTOM_BUTTON_ALT_TEXT
+              value: <your custom button alt text>
+            - name: CUSTOM_BUTTON_COLOR
+              value: '#B997FC,#B997FC'
+            - name: CUSTOM_BUTTON_ICON
+              value: fas link,fab youtube
+            - name: CUSTOM_BUTTON_NAME
+              value: HOMEPAGE
+            - name: CUSTOM_BUTTON_TEXT
+              value: <your custom button text>
+            - name: CUSTOM_BUTTON_TEXT_COLOR
+              value: '#ffffff,#ffffff'
+            - name: CUSTOM_BUTTON_URL
+              value: <your custom button url>
+            - name: EMAIL
+              value: <your email>
+            - name: EMAIL_TEXT
+              value: Email Me
+            - name: FAVICON_URL
+              value: <your favicon url>
+            - name: GITHUB
+              value: <your github url>
+            - name: YOUTUBE
+              value: <your youtube url>
+            - name: LANG
+              value: en
+            - name: LINKED_IN
+              value: <your linkedin url>
+            - name: META_AUTHOR
+              value: <your name>
+            - name: META_DESCRIPTION
+              value: About <your name>
+            - name: META_INDEX_STATUS
+              value: all
+            - name: META_TITLE
+              value: <your_title>
+            - name: NAME
+              value: <your name>
+            - name: THEME
+              value: Dark
+          image: ghcr.io/techno-tim/littlelink-server:latest
+          name: littlelink-server
+          ports:
+            - containerPort: 3000
+      restartPolicy: Always
+# From Techno Tim Little Link Project

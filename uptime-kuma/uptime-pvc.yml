@@ -4,7 +4,7 @@ metadata:
   labels:
     app: uptime
   name: uptime
-  namespace: uptime
+  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce

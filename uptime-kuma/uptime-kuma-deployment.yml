@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: uptime
-  namespace: uptime
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -21,7 +21,7 @@ spec:
             claimName: uptime
       containers:
       - name: uptime
-        image: louislam/uptime-kuma:latest
+        image: louislam/uptime-kuma
         ports:
           - containerPort: 3001
         volumeMounts:
