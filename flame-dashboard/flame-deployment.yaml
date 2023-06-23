@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flame
+  namespace: flame
+  labels:
+    app: flame
+spec:
+  selector:
+    matchLabels:
+      app: flame
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: flame
+    spec:
+      containers:
+        - env:
+            - name: PASSWORD
+              value: <password>
+          image: pawelmalak/flame
+          name: flame
+          ports:
+            - containerPort: 5005
+      volumeMounts:
+            - mountPath: /app/data
+              name: flame-claim0
+            - mountPath: /var/run/docker.sock
+              name: flame-claim1
+      volumes:
+        - name: flame-claim0
+          persistentVolumeClaim:
+            claimName: flame-claim0
+        - name: flame-claim1
+          persistentVolumeClaim:
+            claimName: flame-claim1
+      restartPolicy: Always

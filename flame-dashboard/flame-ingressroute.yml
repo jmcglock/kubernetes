@@ -5,9 +5,9 @@ metadata:
   namespace: flame
 spec:
   entryPoints:
-    - web
+  - web
   routes:
-    - match: Host(`demo.com`)
+    - match: Host(`flame.test.com`)
       kind: Rule
       services:
         - name: flame

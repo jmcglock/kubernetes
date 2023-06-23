@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: changedetection
+  namespace: default
+  labels:
+    app: changedetection
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod-label: changedetection
+  template:
+    metadata:
+      labels:
+        pod-label: changedetection
+    spec:
+      containers:
+      - name: changedetection
+        image: lscr.io/linuxserver/changedetection.io:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: TZ
+          value: America/New_York
+        volumeMounts:
+        - name: changedetection-data
+          mountPath: /config
+      volumes:
+        - name: changedetection-data
+          persistentVolumeClaim:
+            claimName: changedetection-data
