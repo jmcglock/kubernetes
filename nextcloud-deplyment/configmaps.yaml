@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-config
+  labels:
+    app: nextcloud
+data:
+  # Configuration for Nextcloud
+  nextcloud-config.php: |
+    <?php
+    $CONFIG = array (
+      'memcache.local' => '\\OC\\Memcache\\APCu',
+      'datadirectory' => '/var/www/html/data',
+      'instanceid' => 'oc9a42455f22',
+      'passwordsalt' => 'REPLACE_WITH_YOUR_VALUE',
+      'secret' => 'REPLACE_WITH_YOUR_VALUE',
+      'trusted_domains' => 
+      array (
+        0 => 'localhost',
+        1 => 'nextcloud.your-domain.com',
+      ),
+      'dbtype' => 'mysql',
+      'version' => 'REPLACE_WITH_NEXTCLOUD_VERSION',
+      'overwrite.cli.url' => 'http://nextcloud.your-domain.com',
+      'dbname' => 'nextcloud',
+      'dbhost' => 'nextcloud-db',
+      'dbport' => '',
+      'dbtableprefix' => 'oc_',
+      'mysql.utf8mb4' => true,
+      'dbuser' => 'nextcloud',
+      'dbpassword' => 'REPLACE_WITH_DB_PASSWORD',
+      'installed' => false,
+    );
+  # Additional custom configuration can be added here

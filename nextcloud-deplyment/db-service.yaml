@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud-db-service
+  labels:
+    app: nextcloud
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: nextcloud
+    role: db
+  type: ClusterIP
