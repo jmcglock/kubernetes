@@ -1,37 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db
+  name: postgres
   namespace: speedtest-tracker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: db
+      app: postgres
   template:
     metadata:
       labels:
-        app: db
+        app: postgres
     spec:
+      initContainers:
+      - name: clean-db-dir
+        image: busybox
+        command: ['sh', '-c', 'rm -rf /var/lib/postgresql/data/pgdata/* && rm -rf /var/lib/postgresql/data/pgdata/.* || true']
+        volumeMounts:
+          - name: db-data
+            mountPath: /var/lib/postgresql/data/pgdata
       containers:
-        - name: db
-          image: postgres:15
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_DB
-              value: "speedtest_tracker"
-            - name: POSTGRES_USER
-              value: "speedy"
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: db-credentials
-                  key: postgres-password
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: db-data
+      - name: postgres
+        image: postgres:15
+        ports:
+          - containerPort: 5432
+        env:
+          - name: POSTGRES_DB
+            value: "speedtest_tracker"
+          - name: POSTGRES_USER
+            value: "speedy"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials
+                key: postgres-password
+          - name: PGDATA
+            value: "/var/lib/postgresql/data/pgdata"
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data/pgdata
+            name: db-data
       volumes:
-        - name: db-data
-          persistentVolumeClaim:
-            claimName: speedtest-db
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: speedtest-db
