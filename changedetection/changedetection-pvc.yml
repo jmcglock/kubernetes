@@ -1,13 +1,15 @@
+# changedetection-pvc.yml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  name: changedetection-data
+  namespace: changedetection
   labels:
     app: changedetection
-  name: changedetection-data
-  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 1Gi
+  storageClassName: longhorn

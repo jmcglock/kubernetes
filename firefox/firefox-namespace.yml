@@ -1,0 +1,7 @@
+# firefox-namespace.yml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: firefox
+  labels:
+    name: firefox

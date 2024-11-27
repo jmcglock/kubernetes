@@ -3,11 +3,19 @@ kind: PersistentVolume
 metadata:
   name: adguard-pv
   namespace: adguard
+  labels:
+    app: adguard
+    app.kubernetes.io/name: adguard
+    app.kubernetes.io/instance: adguard
+    type: local
 spec:
   capacity:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn
+  volumeMode: Filesystem
   hostPath:
     path: "/mnt/data/adguard"
+    type: DirectoryOrCreate

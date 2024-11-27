@@ -3,17 +3,39 @@ kind: ConfigMap
 metadata:
   name: adguard-config
   namespace: adguard
+  labels:
+    app: adguard
+    app.kubernetes.io/name: adguard
+    app.kubernetes.io/instance: adguard
 data:
   AdGuardHome.yaml: |
     bind_host: 0.0.0.0
     bind_port: 3000
-    auth_name: "admin"
-    auth_pass: "your-password"
+    beta_bind_port: 0
+    users: []  # Move users to secret
     language: "en"
-    rlimit_nofile: 0
-    rlimit_nproc: 0
-    log_file: ""
-    log_syslog: false
-    log_syslog_srv: ""
-    pid_file: ""
-    verbose: false
+    theme: "auto"
+    dns:
+      bind_host: 0.0.0.0
+      port: 53
+      protection_enabled: true
+      filtering_enabled: true
+      safebrowsing_enabled: true
+      safesearch_enabled: true
+      querylog_enabled: true
+      ratelimit: 20
+      blocked_response_ttl: 10
+      bootstrap_dns:
+        - 1.1.1.1
+        - 8.8.8.8
+    tls:
+      enabled: false
+    log:
+      file: ""
+      max_backups: 0
+      max_size: 100
+      max_age: 3
+      compress: false
+      local_time: false
+    security:
+      protection_enabled: true

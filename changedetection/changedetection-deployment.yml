@@ -1,36 +1,67 @@
+# changedetection-deployment.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: changedetection
-  namespace: default
+  namespace: changedetection
   labels:
     app: changedetection
 spec:
   replicas: 1
   selector:
     matchLabels:
-      pod-label: changedetection
+      app: changedetection
   template:
     metadata:
       labels:
-        pod-label: changedetection
+        app: changedetection
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: changedetection
-        image: lscr.io/linuxserver/changedetection.io:latest
+        env:
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: changedetection-secret
+              key: API_KEY
+        - name: NOTIFICATION_TOKEN 
+          valueFrom:
+            secretKeyRef:
+              name: changedetection-secret
+              key: NOTIFICATION_TOKEN
+      - name: changedetection
+        image: dgtlmoon/changedetection.io:latest
+        securityContext:
+          runAsUser: 1000
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
         ports:
         - containerPort: 5000
-        env:
-        - name: PGID
-          value: "1000"
-        - name: PUID
-          value: "1000"
-        - name: TZ
-          value: America/New_York
+          name: http
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 15
         volumeMounts:
-        - name: changedetection-data
-          mountPath: /config
+        - name: data
+          mountPath: /datastore
       volumes:
-        - name: changedetection-data
-          persistentVolumeClaim:
-            claimName: changedetection-data
+      - name: data
+        persistentVolumeClaim:
+          claimName: changedetection-data

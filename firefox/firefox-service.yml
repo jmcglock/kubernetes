@@ -1,14 +1,20 @@
+# firefox-service.yml
 apiVersion: v1
 kind: Service
 metadata:
-  name: firefox-service
+  name: firefox
+  namespace: firefox
   labels:
     app: firefox
 spec:
-  type: LoadBalancer
   ports:
+  - port: 80
+    targetPort: 5800
+    protocol: TCP
+    name: http
   - port: 5900
     targetPort: 5900
     protocol: TCP
+    name: vnc
   selector:
     app: firefox

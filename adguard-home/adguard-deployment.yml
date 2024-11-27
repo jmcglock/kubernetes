@@ -3,8 +3,14 @@ kind: Deployment
 metadata:
   name: adguard-deployment
   namespace: adguard
+  labels:
+    app: adguard
+    app.kubernetes.io/name: adguard
+    app.kubernetes.io/instance: adguard
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: adguard
@@ -13,9 +19,12 @@ spec:
       labels:
         app: adguard
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: adguard-home
         image: adguard/adguardhome:latest
+        imagePullPolicy: IfNotPresent
         env:
         - name: AGH_CONFIG
           valueFrom:
@@ -24,17 +33,52 @@ spec:
               key: AdGuardHome.yaml
         ports:
         - containerPort: 53
-          name: dns
+          name: dns-udp
           protocol: UDP
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
         - containerPort: 3000
           name: http-initial
+          protocol: TCP
         - containerPort: 80
           name: http
           protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
         volumeMounts:
         - name: adguard-data
           mountPath: /opt/adguardhome/work
+        - name: adguard-config
+          mountPath: /opt/adguardhome/conf
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
       volumes:
       - name: adguard-data
         persistentVolumeClaim:
           claimName: adguard-pvc
+      - name: adguard-config
+        configMap:
+          name: adguard-config

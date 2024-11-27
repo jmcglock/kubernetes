@@ -1,7 +1,9 @@
+# firefox-deployment.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: firefox
+  namespace: firefox
   labels:
     app: firefox
 spec:
@@ -14,9 +16,38 @@ spec:
       labels:
         app: firefox
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: firefox
-        image: linuxserver/firefox:latest
+        image: jlesage/firefox:latest
+        securityContext:
+          runAsUser: 1000
+          runAsNonRoot: true
         ports:
+        - containerPort: 5800
+          name: http
         - containerPort: 5900
           name: vnc
+        env:
+        - name: TZ
+          value: "America/New_York"
+        - name: DISPLAY_WIDTH
+          value: "1920"
+        - name: DISPLAY_HEIGHT
+          value: "1080"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2000m"
+            memory: "2Gi"
+        livenessProbe:
+          tcpSocket:
+            port: 5800
+          initialDelaySeconds: 30
+        readinessProbe:
+          tcpSocket:
+            port: 5800
+          initialDelaySeconds: 15
