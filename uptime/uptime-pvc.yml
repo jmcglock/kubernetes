@@ -4,10 +4,10 @@ metadata:
   labels:
     app: uptime
   name: uptime
-  namespace: default
+  namespace: uptime
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 150Mi

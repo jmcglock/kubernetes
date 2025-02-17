@@ -1,11 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: smokeping
-  namespace: default
+  name: smokeping-svc
+  namespace: smokeping
 spec:
   selector:
     app: smokeping
   ports:
-    - port: 80
-      targetPort: 80
+  - name: smokeping
+    port: 80
+    protocol: TCP
+    targetPort: 80
