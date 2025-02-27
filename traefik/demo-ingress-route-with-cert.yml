@@ -9,15 +9,21 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`www.demo.local.test.com`)
-      kind: Rule
-      services:
-        - name: demo
-          port: 80
-    - match: Host(`demo.local.test.com`)
+    - match: Host(`www.yourdomain.com`)
       kind: Rule
       services:
         - name: demo
           port: 80
       middlewares:
         - name: default-headers
+          namespace: default
+    - match: Host(`yourdomain.com`)
+      kind: Rule
+      services:
+        - name: demo
+          port: 80
+      middlewares:
+        - name: default-headers
+          namespace: default
+  tls:
+    certResolver: le

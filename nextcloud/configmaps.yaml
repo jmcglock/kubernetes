@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nextcloud-config
+  namespace: nextcloud
   labels:
     app: nextcloud
 data:
@@ -12,23 +13,22 @@ data:
       'memcache.local' => '\\OC\\Memcache\\APCu',
       'datadirectory' => '/var/www/html/data',
       'instanceid' => 'oc9a42455f22',
-      'passwordsalt' => 'REPLACE_WITH_YOUR_VALUE',
-      'secret' => 'REPLACE_WITH_YOUR_VALUE',
+      'passwordsalt' => 'YourSaltValueFromDeployment',
+      'secret' => 'YourSecretValueFromDeployment',
       'trusted_domains' => 
       array (
         0 => 'localhost',
-        1 => 'nextcloud.your-domain.com',
+        1 => 'cloud.yourdomain.com',
       ),
       'dbtype' => 'mysql',
-      'version' => 'REPLACE_WITH_NEXTCLOUD_VERSION',
-      'overwrite.cli.url' => 'http://nextcloud.your-domain.com',
+      'version' => '30.0.5',
+      'overwrite.cli.url' => 'https://cloud.yourdomain.com',
       'dbname' => 'nextcloud',
-      'dbhost' => 'nextcloud-db',
+      'dbhost' => 'nextcloud-db-service',
       'dbport' => '',
       'dbtableprefix' => 'oc_',
       'mysql.utf8mb4' => true,
       'dbuser' => 'nextcloud',
-      'dbpassword' => 'REPLACE_WITH_DB_PASSWORD',
       'installed' => false,
     );
   # Additional custom configuration can be added here

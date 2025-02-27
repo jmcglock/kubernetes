@@ -3,7 +3,10 @@ kind: Service
 metadata:
   name: mysql-workbench
   namespace: mysql-workbench
+  labels:
+    app: mysql-workbench
 spec:
+  type: ClusterIP
   ports:
   - name: mysql-workbench
     port: 3000

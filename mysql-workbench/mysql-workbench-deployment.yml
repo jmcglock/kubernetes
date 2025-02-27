@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-workbench
+  namespace: mysql-workbench
+  labels:
+    app: mysql-workbench
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-workbench
+  template:
+    metadata:
+      labels:
+        app: mysql-workbench
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: mysql-workbench
+        image: lscr.io/linuxserver/mysql-workbench:latest
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          allowPrivilegeEscalation: false
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "America/New_York"
+        ports:
+        - containerPort: 3000
+          name: workbench
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: mysql-workbench-pvc

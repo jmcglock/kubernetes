@@ -3,12 +3,29 @@ kind: IngressRoute
 metadata:
   name: smokeping-ingressroute
   namespace: smokeping
+  labels:
+    app: smokeping
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
-    - match: Host(`smokeping.demo.com`)
+    - match: Host(`smokeping.yourdomain.com`)
       kind: Rule
       services:
         - name: smokeping-svc
           port: 80
+      middlewares:
+        - name: smokeping-headers
+  tls:
+    certResolver: le
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: smokeping-headers
+  namespace: smokeping
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"

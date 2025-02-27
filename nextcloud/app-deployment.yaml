@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+  labels:
+    app: nextcloud
+    role: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+      role: app
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+        role: app
+    spec:
+      securityContext:
+        fsGroup: 33 # www-data
+      containers:
+      - name: nextcloud
+        image: nextcloud:30.0.5-apache
+        securityContext:
+          runAsUser: 33
+          runAsGroup: 33
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        ports:
+        - name: http
+          containerPort: 80
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-db-password
+              key: password
+        - name: MYSQL_DATABASE
+          value: nextcloud
+        - name: MYSQL_USER
+          value: nextcloud
+        - name: MYSQL_HOST
+          value: nextcloud-db-service
+        - name: NEXTCLOUD_TRUSTED_DOMAINS
+          value: "cloud.yourdomain.com localhost"
+        - name: NEXTCLOUD_ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-admin-credentials
+              key: username
+        - name: NEXTCLOUD_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-admin-credentials
+              key: password
+        - name: PHP_MEMORY_LIMIT
+          value: "512M"
+        - name: PHP_UPLOAD_LIMIT
+          value: "512M"
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+        livenessProbe:
+          httpGet:
+            path: /status.php
+            port: http
+          initialDelaySeconds: 120
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /status.php
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: nextcloud-data
+          mountPath: /var/www/html/data
+        - name: nextcloud-config
+          mountPath: /var/www/html/config
+      volumes:
+      - name: nextcloud-data
+        persistentVolumeClaim:
+          claimName: nextcloud-data-pvc
+      - name: nextcloud-config
+        emptyDir: {}

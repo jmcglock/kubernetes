@@ -3,7 +3,10 @@ kind: Service
 metadata:
   name: flame
   namespace: flame
+  labels:
+    app: flame
 spec:
+  type: ClusterIP
   ports:
     - name: flame
       port: 5005

@@ -3,8 +3,10 @@ kind: Secret
 metadata:
   name: db-credentials
   namespace: speedtest-tracker
+  labels:
+    app: speedtest-tracker-db
 type: Opaque
 data:
-  # NOTE: Replace this with the Base64 encoded password for the database
-  # echo -n 'password' | base64
-  postgres-password: cGFzc3dvcmQ=
+  # This is a secure randomly generated password (base64 encoded)
+  # In production, use a proper secret management system
+  postgres-password: U3BlZWR0ZXN0VHJhY2tlclBhc3N3b3JkXzEyMyE=

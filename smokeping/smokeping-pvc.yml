@@ -3,9 +3,12 @@ kind: PersistentVolumeClaim
 metadata:
   name: smokeping-pvc
   namespace: smokeping
+  labels:
+    app: smokeping
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: longhorn
   resources:
     requests:
-      storage: 1Gi
+      storage: 5Gi

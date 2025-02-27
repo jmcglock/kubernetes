@@ -3,12 +3,29 @@ kind: IngressRoute
 metadata:
   name: uptime-ingressroute
   namespace: uptime
+  labels:
+    app: uptime
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
-    - match: Host(`uptime.demo.com`)
+    - match: Host(`uptime.yourdomain.com`)
       kind: Rule
       services:
         - name: uptime-svc
           port: 80
+      middlewares:
+        - name: uptime-headers
+  tls:
+    certResolver: le
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: uptime-headers
+  namespace: uptime
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"

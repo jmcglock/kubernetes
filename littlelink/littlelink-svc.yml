@@ -3,11 +3,14 @@ kind: Service
 metadata:
   name: littlelink
   namespace: littlelink
+  labels:
+    app: littlelink
 spec:
+  type: ClusterIP
   ports:
   - name: littlelink
     port: 8080
     protocol: TCP
     targetPort: 3000
   selector:
-    pod-label: littlelink
+    app: littlelink

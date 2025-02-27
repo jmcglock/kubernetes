@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: homarr
-  namespace: default
+  namespace: homarr
   labels:
     app: homarr
 spec:
@@ -15,19 +15,48 @@ spec:
   template:
     metadata:
       labels:
-        app:  homarr
+        app: homarr
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: homarr
-        image: ghcr.io/ajnart/homarr:latest
+        image: ghcr.io/ajnart/homarr:0.15.10
+        securityContext:
+          runAsUser: 1000
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
         ports:
         - containerPort: 7575
           name: homarr
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "300m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: homarr
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: homarr
+          initialDelaySeconds: 15
+          periodSeconds: 5
         volumeMounts:
-        - name: homarr-claim0
+        - name: homarr-data
           mountPath: /app/data/configs
       volumes:
-        - name: homarr-claim0
+        - name: homarr-data
           persistentVolumeClaim:
             claimName: homarr-claim0
       restartPolicy: Always

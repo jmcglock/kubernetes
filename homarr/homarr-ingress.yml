@@ -2,24 +2,19 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: homarr
-  namespace: default
+  namespace: homarr
+  labels:
+    app: homarr
   annotations: 
     kubernetes.io/ingress.class: traefik-external
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`www.dashboard.test.com`)
+    - match: Host(`dashboard.yourdomain.com`)
       kind: Rule
       services:
         - name: homarr
           port: 80
-    - match: Host(`dashboard.test.com`)
-      kind: Rule
-      services:
-        - name: homarr
-          port: 80
-      middlewares:
-        - name: default-headers
   tls:
-    secretName: local-test-com-tls
+    certResolver: le

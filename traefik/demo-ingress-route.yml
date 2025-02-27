@@ -3,12 +3,19 @@ kind: IngressRoute
 metadata:
   name: demo
   namespace: demo
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
 spec:
   entryPoints:
-  - web
+    - websecure
   routes:
-    - match: Host(`demo.test.com`)
+    - match: Host(`demo.yourdomain.com`)
       kind: Rule
       services:
         - name: demo-service
           port: 80
+      middlewares:
+        - name: default-headers
+          namespace: default
+  tls:
+    certResolver: le

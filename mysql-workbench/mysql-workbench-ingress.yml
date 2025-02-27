@@ -3,11 +3,13 @@ kind: IngressRoute
 metadata:
   name: mysql-workbench
   namespace: mysql-workbench
+  labels:
+    app: mysql-workbench
 spec:
   entryPoints:
-  - web
+  - websecure
   routes:
-    - match: Host(`mysql-workbench.test.com`)
+    - match: Host(`workbench.yourdomain.com`)
       kind: Rule
       middlewares:
       - name: auth
@@ -15,3 +17,5 @@ spec:
       services:
         - name: mysql-workbench
           port: 3000
+  tls:
+    certResolver: le

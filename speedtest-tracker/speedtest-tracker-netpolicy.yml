@@ -1,0 +1,66 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: speedtest-tracker-network-policy
+  namespace: speedtest-tracker
+  labels:
+    app: speedtest-tracker
+spec:
+  podSelector:
+    matchLabels:
+      app: speedtest-tracker
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: traefik
+    ports:
+    - protocol: TCP
+      port: 80
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: speedtest-tracker-db
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: speedtest-tracker-db-network-policy
+  namespace: speedtest-tracker
+  labels:
+    app: speedtest-tracker-db
+spec:
+  podSelector:
+    matchLabels:
+      app: speedtest-tracker-db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: speedtest-tracker
+    ports:
+    - protocol: TCP
+      port: 5432
+  egress: [] 

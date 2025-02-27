@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ghost
+  namespace: ghost
+  labels:
+    app: ghost
 spec:
   replicas: 1
   selector:
@@ -12,21 +15,51 @@ spec:
       labels:
         app: ghost
     spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsNonRoot: true
       containers:
       - name: ghost
-        image: ghost:3.21.0-alpine
+        image: ghost:5.109.0-alpine
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
         env:
         - name: url
-          value: https://www.example.com
+          value: https://blog.yourdomain.com
         - name: database__client
           value: sqlite3
         - name: database__connection__filename
           value: /var/lib/ghost/content/data/ghost.db
         ports:
         - containerPort: 2368
+          name: http
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
         volumeMounts:
         - name: ghost-data
-          mountPath: /var/lib/ghost/content/data
+          mountPath: /var/lib/ghost/content
       volumes:
       - name: ghost-data
         persistentVolumeClaim:

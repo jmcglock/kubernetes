@@ -1,12 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: speedtest-tracker-db-svc
   namespace: speedtest-tracker
+  labels:
+    app: speedtest-tracker-db
+    role: database
 spec:
-  ports:
-  - port: 5432
-    targetPort: 5432
+  type: ClusterIP
   selector:
-    app: postgres
-  type: LoadBalancer
+    app: speedtest-tracker-db
+  ports:
+  - name: postgres
+    port: 5432
+    protocol: TCP
+    targetPort: 5432

@@ -3,8 +3,12 @@ kind: Deployment
 metadata:
   name: speedtest-tracker
   namespace: speedtest-tracker
+  labels:
+    app: speedtest-tracker
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: speedtest-tracker
@@ -13,6 +17,8 @@ spec:
       labels:
         app: speedtest-tracker
     spec:
+      securityContext:
+        fsGroup: 1000
       dnsPolicy: None
       dnsConfig:
         nameservers:
@@ -25,9 +31,41 @@ spec:
             value: "5"
       containers:
         - name: speedtest-tracker
-          image: ghcr.io/alexjustesen/speedtest-tracker:latest
+          # Official LinuxServer.io image
+          image: lscr.io/linuxserver/speedtest-tracker:latest
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+              - ALL
           ports:
             - containerPort: 80
+              name: http
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 5
           env:
             - name: PUID
               value: "1000"
@@ -36,7 +74,7 @@ spec:
             - name: DB_CONNECTION
               value: "pgsql"
             - name: DB_HOST
-              value: "<load balancer ip>"
+              value: "speedtest-tracker-db-svc"
             - name: DB_PORT
               value: "5432"
             - name: DB_DATABASE
@@ -48,6 +86,8 @@ spec:
                 secretKeyRef:
                   name: db-credentials
                   key: postgres-password
+            - name: TZ
+              value: "America/New_York"
           volumeMounts:
             - mountPath: /config
               name: speedtest-tracker

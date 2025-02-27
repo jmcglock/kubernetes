@@ -2,13 +2,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nextcloud-db-service
+  namespace: nextcloud
   labels:
     app: nextcloud
+    role: db
 spec:
+  type: ClusterIP
   ports:
-  - port: 3306
+  - name: mysql
+    port: 3306
     targetPort: 3306
   selector:
     app: nextcloud
     role: db
-  type: ClusterIP

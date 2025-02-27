@@ -3,11 +3,15 @@ kind: Service
 metadata:
   name: uptime-svc
   namespace: uptime
+  labels:
+    app: uptime
+    role: monitoring
 spec:
+  type: ClusterIP
   selector:
     app: uptime
   ports:
-  - name: uptime
+  - name: http
     port: 80
     protocol: TCP
     targetPort: 3001
