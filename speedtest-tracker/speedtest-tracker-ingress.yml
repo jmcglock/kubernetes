@@ -3,12 +3,29 @@ kind: IngressRoute
 metadata:
   name: speedtest-ingressroute
   namespace: speedtest-tracker
+  labels:
+    app: speedtest-tracker
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
-    - match: Host(`speedtest.demo.com`)
+    - match: Host(`speedtest.yourdomain.com`)
       kind: Rule
       services:
         - name: speedtest-tracker
           port: 80
+      middlewares:
+        - name: speedtest-headers
+  tls:
+    certResolver: le
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: speedtest-headers
+  namespace: speedtest-tracker
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"

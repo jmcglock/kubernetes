@@ -3,9 +3,12 @@ kind: PersistentVolumeClaim
 metadata:
   name: speedtest-tracker
   namespace: speedtest-tracker
+  labels:
+    app: speedtest-tracker
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: longhorn
   resources:
     requests:
       storage: 5Gi

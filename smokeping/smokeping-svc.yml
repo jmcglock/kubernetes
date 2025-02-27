@@ -3,11 +3,15 @@ kind: Service
 metadata:
   name: smokeping-svc
   namespace: smokeping
+  labels:
+    app: smokeping
+    role: monitoring
 spec:
+  type: ClusterIP
   selector:
     app: smokeping
   ports:
-  - name: smokeping
+  - name: http
     port: 80
     protocol: TCP
     targetPort: 80

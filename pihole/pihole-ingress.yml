@@ -1,0 +1,31 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pihole-ingressroute
+  namespace: pihole
+  labels:
+    app: pihole
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`pihole.yourdomain.com`)
+      kind: Rule
+      services:
+        - name: pihole-service
+          port: 80
+      middlewares:
+        - name: pihole-headers
+  tls:
+    certResolver: le
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: pihole-headers
+  namespace: pihole
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: "https" 

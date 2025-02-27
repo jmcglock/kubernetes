@@ -9,11 +9,15 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`traefik.local.test.com`)
+    - match: Host(`traefik.yourdomain.com`)
       kind: Rule
       middlewares:
         - name: traefik-dashboard-basicauth
           namespace: traefik
+        - name: default-headers
+          namespace: default
       services:
         - name: api@internal
           kind: TraefikService
+  tls:
+    certResolver: le

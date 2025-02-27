@@ -3,11 +3,15 @@ kind: Service
 metadata:
   name: speedtest-tracker
   namespace: speedtest-tracker
+  labels:
+    app: speedtest-tracker
+    role: monitoring
 spec:
+  type: ClusterIP
   selector:
     app: speedtest-tracker
   ports:
-  - name: speedtest-tracker
+  - name: http
     port: 80
     protocol: TCP
     targetPort: 80

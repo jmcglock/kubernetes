@@ -1,0 +1,17 @@
+# firefox-ingress.yml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: firefox
+  namespace: firefox
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`firefox.yourdomain.com`)
+      kind: Rule
+      services:
+        - name: firefox
+          port: 80
+  tls:
+    certResolver: le 

@@ -20,10 +20,11 @@ spec:
         fsGroup: 1000
       containers:
       - name: firefox
-        image: jlesage/firefox:latest
+        image: jlesage/firefox:v1.19.1
         securityContext:
           runAsUser: 1000
           runAsNonRoot: true
+          allowPrivilegeEscalation: false
         ports:
         - containerPort: 5800
           name: http
@@ -47,7 +48,17 @@ spec:
           tcpSocket:
             port: 5800
           initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
         readinessProbe:
           tcpSocket:
             port: 5800
           initialDelaySeconds: 15
+          periodSeconds: 5
+        volumeMounts:
+        - name: firefox-config
+          mountPath: /config
+      volumes:
+      - name: firefox-config
+        persistentVolumeClaim:
+          claimName: firefox-config-pvc

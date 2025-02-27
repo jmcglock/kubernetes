@@ -3,27 +3,70 @@ kind: Deployment
 metadata:
   name: uptime
   namespace: uptime
+  labels:
+    app: uptime
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: uptime
   template:
     metadata:
-      annotations:
-        linkerd.io/inject: enabled
       labels:
         app: uptime
     spec:
+      securityContext:
+        fsGroup: 1001
       volumes:
         - name: uptime
           persistentVolumeClaim:
             claimName: uptime
       containers:
       - name: uptime
-        image: louislam/uptime-kuma
+        image: louislam/uptime-kuma:1
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 1001
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+            - ALL
         ports:
           - containerPort: 3001
+            name: http
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "300m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: TZ
+            value: "America/New_York"
         volumeMounts:
         - mountPath: "/app/data"
           name: uptime

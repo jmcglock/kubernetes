@@ -17,24 +17,49 @@ spec:
       labels:
         app: flame
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
-        - env:
+        - name: flame
+          image: pawelmalak/flame:2.3.1
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          env:
             - name: PASSWORD
-              value: <password>
-          image: pawelmalak/flame
-          name: flame
+              valueFrom:
+                secretKeyRef:
+                  name: flame-secret
+                  key: password
           ports:
             - containerPort: 5005
-      volumeMounts:
+              name: http
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          volumeMounts:
             - mountPath: /app/data
-              name: flame-claim0
-            - mountPath: /var/run/docker.sock
-              name: flame-claim1
+              name: flame-data
       volumes:
-        - name: flame-claim0
+        - name: flame-data
           persistentVolumeClaim:
             claimName: flame-claim0
-        - name: flame-claim1
-          persistentVolumeClaim:
-            claimName: flame-claim1
       restartPolicy: Always

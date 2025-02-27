@@ -9,30 +9,32 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      pod-label: littlelink
+      app: littlelink
   template:
     metadata:
       labels:
-        pod-label: littlelink
+        app: littlelink
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - env:
             - name: AVATAR_2X_URL
-              value: <your avatar url>
+              value: https://something.com/200/200
             - name: AVATAR_ALT
-              value: <
+              value: Profile picture
             - name: AVATAR_URL
-              value: <your avatar url>
+              value: https://something.com/100/100
             - name: META_DESCRIPTION
-              value: <your description>
+              value: Links to my social profiles
             - name: BIO
-              value: <your bio>
+              value: Find me across the web
             - name: BUTTON_ORDER
               value: YOUTUBE,GITHUB,LINKED,EMAIL
             - name: BUTTON_TARGET
               value: blank
             - name: CUSTOM_BUTTON_ALT_TEXT
-              value: <your custom button alt text>
+              value: Visit my homepage
             - name: CUSTOM_BUTTON_COLOR
               value: '#B997FC,#B997FC'
             - name: CUSTOM_BUTTON_ICON
@@ -40,40 +42,67 @@ spec:
             - name: CUSTOM_BUTTON_NAME
               value: HOMEPAGE
             - name: CUSTOM_BUTTON_TEXT
-              value: <your custom button text>
+              value: My Homepage
             - name: CUSTOM_BUTTON_TEXT_COLOR
               value: '#ffffff,#ffffff'
             - name: CUSTOM_BUTTON_URL
-              value: <your custom button url>
+              value: https://yourdomain.com
             - name: EMAIL
-              value: <your email>
+              value: your.email@yourdomain.com
             - name: EMAIL_TEXT
               value: Email Me
             - name: FAVICON_URL
-              value: <your favicon url>
+              value: https://something.com/32/32
             - name: GITHUB
-              value: <your github url>
+              value: https://github.com/yourusername
             - name: YOUTUBE
-              value: <your youtube url>
+              value: https://youtube.com/@yourusername
             - name: LANG
               value: en
             - name: LINKED_IN
-              value: <your linkedin url>
+              value: https://linkedin.com/in/yourusername
             - name: META_AUTHOR
-              value: <your name>
+              value: Your Name
             - name: META_DESCRIPTION
-              value: About <your name>
+              value: About Your Name
             - name: META_INDEX_STATUS
               value: all
             - name: META_TITLE
-              value: <your_title>
+              value: Your Name - Links
             - name: NAME
-              value: <your name>
+              value: Your Name
             - name: THEME
               value: Dark
-          image: ghcr.io/techno-tim/littlelink-server:latest
+          image: ghcr.io/techno-tim/littlelink-server:v0.5.4
           name: littlelink-server
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 5
           ports:
             - containerPort: 3000
+              name: http
       restartPolicy: Always
 # From Techno Tim Little Link Project

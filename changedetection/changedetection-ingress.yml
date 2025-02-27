@@ -8,10 +8,10 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`changedetection.example.com`)
+    - match: Host(`changes.yourdomain.com`)
       kind: Rule
       services:
         - name: changedetection
           port: 80
   tls:
-    secretName: changes-tls
+    certResolver: le

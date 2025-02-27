@@ -2,12 +2,17 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: littlelink
+  namespace: littlelink
+  labels:
+    app: littlelink
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
-    - match: Host(`about.example.com`)
+    - match: Host(`links.yourdomain.com`)
       kind: Rule
       services:
         - name: littlelink
           port: 8080
+  tls:
+    certResolver: le

@@ -2,10 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+  namespace: mysql
+  labels:
+    app: mysql
 spec:  
   selector:
     matchLabels:
       app: mysql
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -13,7 +18,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql
+        image: mysql:8.0.34
         env:
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
@@ -23,7 +28,38 @@ spec:
         ports:
         - containerPort: 3306
           name: mysql
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
         securityContext:
           runAsUser: 104
           runAsGroup: 113
-          fsGroup: 113
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "ping", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["mysqladmin", "ping", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+      securityContext:
+        fsGroup: 113
+      volumes:
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: mysql-pvc

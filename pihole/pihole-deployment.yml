@@ -2,8 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pihole-deployment
+  namespace: pihole
+  labels:
+    app: pihole
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: pihole
@@ -11,42 +16,87 @@ spec:
     metadata:
       labels:
         app: pihole
+      annotations:
+        instrumentation.opentelemetry.io/inject-sdk: "false"
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: pihole
-        image: pihole/pihole:latest
-        ports:
-        - containerPort: 80
-        - containerPort: 53
-          protocol: UDP
-        environment:
+        image: pihole/pihole:2024.07.0
+        securityContext:
+          runAsUser: 1000
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+            - ALL
+        env:
+        - name: TZ
+          value: "America/Los_Angeles"
         - name: ServerIP
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        - name: TZ
-          value: "America/Los_Angeles"
-        - name: DNS1
-          value: "8.8.8.8"
-        - name: DNS2
-          value: "8.8.4.4"
         - name: WEBPASSWORD
           valueFrom:
             secretKeyRef:
               name: pihole-webpassword
               key: password
+        - name: DNS1
+          value: "1.1.1.1"
+        - name: DNS2
+          value: "9.9.9.9"
+        - name: DNSMASQ_LISTENING
+          value: "all"
+        - name: TEMPERATUREUNIT
+          value: "c"
+        - name: PIHOLE_DNS_
+          value: "1.1.1.1;9.9.9.9"
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 53
+          protocol: UDP
+          name: dns-udp
+        - containerPort: 53
+          protocol: TCP
+          name: dns-tcp
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /admin/
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /admin/
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
-        - name: dnsmasq-etc-volume
-          mountPath: /etc/dnsmasq.d/
-        - name: pihole-persist-data
+        - name: pihole-etc
           mountPath: /etc/pihole/
+        - name: dnsmasq-etc
+          mountPath: /etc/dnsmasq.d/
       volumes:
-      - name: dnsmasq-etc-volume
+      - name: pihole-etc
+        persistentVolumeClaim:
+          claimName: pihole-pvc
+      - name: dnsmasq-etc
         configMap:
           name: pihole-dnsmasq-cm
           items:
           - key: dnsmasq.conf
             path: dnsmasq.conf
-      - name: pihole-persist-data
-        persistentVolumeClaim:
-          claimName: pihole-pvc

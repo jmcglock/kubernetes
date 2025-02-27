@@ -2,8 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nextcloud-db
+  namespace: nextcloud
   labels:
     app: nextcloud
+    role: db
 spec:
   replicas: 1
   selector:
@@ -16,30 +18,47 @@ spec:
         app: nextcloud
         role: db
     spec:
+      securityContext:
+        fsGroup: 999 # mysql group
       containers:
       - name: nextcloud-db
         image: mariadb:10.5
+        securityContext:
+          runAsUser: 999 # mysql user
+          runAsGroup: 999
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: nextcloud-secrets
-              key: db-root-password
+              name: nextcloud-db-password
+              key: root-password
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: nextcloud-secrets
-              key: db-password
+              name: nextcloud-db-password
+              key: password
         - name: MYSQL_DATABASE
           value: nextcloud
         - name: MYSQL_USER
           value: nextcloud
         ports:
         - containerPort: 3306
+          name: mysql
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
         volumeMounts:
         - name: nextcloud-db
           mountPath: /var/lib/mysql
       volumes:
       - name: nextcloud-db
         persistentVolumeClaim:
-          claimName: nextcloud-pvc
+          claimName: nextcloud-db-pvc

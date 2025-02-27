@@ -1,0 +1,15 @@
+# firefox-pvc.yml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: firefox-config-pvc
+  namespace: firefox
+  labels:
+    app: firefox
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: longhorn 

@@ -20,6 +20,15 @@ spec:
         fsGroup: 1000
       containers:
       - name: changedetection
+        image: dgtlmoon/changedetection.io:0.45.6
+        securityContext:
+          runAsUser: 1000
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
         env:
         - name: API_KEY
           valueFrom:
@@ -31,12 +40,6 @@ spec:
             secretKeyRef:
               name: changedetection-secret
               key: NOTIFICATION_TOKEN
-      - name: changedetection
-        image: dgtlmoon/changedetection.io:latest
-        securityContext:
-          runAsUser: 1000
-          runAsNonRoot: true
-          readOnlyRootFilesystem: true
         ports:
         - containerPort: 5000
           name: http
@@ -58,10 +61,15 @@ spec:
             path: /
             port: http
           initialDelaySeconds: 15
+          periodSeconds: 5
         volumeMounts:
         - name: data
           mountPath: /datastore
+        - name: tmp
+          mountPath: /tmp
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: changedetection-data
+      - name: tmp
+        emptyDir: {}

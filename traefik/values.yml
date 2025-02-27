@@ -3,16 +3,41 @@ globalArguments:
   - '--global.sendanonymoususage=false'
 
 additionalArguments:
-  - '--serversTransport.insecureSkipVerify=true'
   - '--log.level=INFO'
+  - '--accesslog=true'
+  - '--accesslog.bufferingsize=100'
+  - '--certificatesresolvers.le.acme.email=your-email@yourdomain.com'
+  - '--certificatesresolvers.le.acme.storage=/data/acme.json'
+  - '--certificatesresolvers.le.acme.tlschallenge=true'
+  - '--metrics.prometheus=true'
+  - '--metrics.prometheus.addEntryPointsLabels=true'
+  - '--metrics.prometheus.addServicesLabels=true'
+  - '--entryPoints.websecure.http.tls.options=default'
+
+persistence:
+  enabled: true
+  path: /data
+  size: 128Mi
+  storageClass: longhorn
 
 deployment:
   enabled: true
-  replicas: 1
+  replicas: 2
   annotations: {}
-  podAnnotations: {}
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "9100"
   additionalContainers: []
   initContainers: []
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
 
 ports:
   web:
@@ -24,22 +49,54 @@ ports:
 ingressRoute:
   dashboard:
     enabled: true
+    annotations:
+      traefik.ingress.kubernetes.io/router.middlewares: traefik-traefik-dashboard-basicauth@kubernetescrd
 
 providers:
   kubernetesCRD:
     enabled: true
     ingressClass: traefik-external
+    namespaces: []
   kubernetesIngress:
     enabled: true 
     publishedService:
-      enabled: false 
+      enabled: true 
 
 service:
   enabled: true 
   type: LoadBalancer
-  annotations: {}
-  labels: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik
   spec:
-    loadBalancerIP: <YOUR LB IP>
+    loadBalancerIP: ""
   loadBalancerSourceRanges: []
   externalIPs: []
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsGroup: 65532
+  runAsNonRoot: true
+  runAsUser: 65532
+
+podSecurityContext:
+  fsGroup: 65532
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - traefik
+          topologyKey: kubernetes.io/hostname

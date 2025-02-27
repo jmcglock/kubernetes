@@ -7,6 +7,7 @@ metadata:
   labels:
     app: firefox
 spec:
+  type: ClusterIP
   ports:
   - port: 80
     targetPort: 5800

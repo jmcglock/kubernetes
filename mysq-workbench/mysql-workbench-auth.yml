@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: auth
-  namespace: mysql-workbench
-type: kubernetes.io/basic-auth
-data:
-  username: <base64 encoded username>
-  password: <base64 encoded password>

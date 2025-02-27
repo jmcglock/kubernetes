@@ -3,12 +3,16 @@ kind: IngressRoute
 metadata:
   name: flame
   namespace: flame
+  labels:
+    app: flame
 spec:
   entryPoints:
-  - web
+  - websecure
   routes:
-    - match: Host(`flame.test.com`)
+    - match: Host(`flame.yourdomain.com`)
       kind: Rule
       services:
         - name: flame
           port: 5005
+  tls:
+    certResolver: le

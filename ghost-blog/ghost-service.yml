@@ -3,9 +3,13 @@ kind: Service
 metadata:
   name: ghost-svc
   namespace: ghost
+  labels:
+    app: ghost
 spec:
+  type: ClusterIP
   ports:
   - name: web
     port: 2368
+    targetPort: 2368
   selector:
     app: ghost

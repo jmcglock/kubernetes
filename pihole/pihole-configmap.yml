@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pihole-dnsmasq-cm
+  namespace: pihole
+  labels:
+    app: pihole
+data:
+  dnsmasq.conf: |
+    # Pi-hole dnsmasq optimal configuration
+    # Increased cache for better performance
+    cache-size=10000
+    
+    # Enable DNSSEC validation
+    dnssec
+    dnssec-check-unsigned
+    
+    # Logging configuration
+    log-queries=extra
+    log-facility=/var/log/pihole.log
+    
+    # Reduce TTL for local responses for faster updates
+    local-ttl=2
+    
+    # Improve DNS lookup speeds
+    dns-forward-max=500
+    
+    # Prevent DNS rebinding attacks
+    stop-dns-rebind
+    rebind-domain-ok=/plex.direct/
+    # Add your custom dnsmasq configurations here
+    # For example:
+    # server=/example.com/192.168.1.1
+    # address=/example.com/192.168.1.1
+    # This is a basic configuration 
