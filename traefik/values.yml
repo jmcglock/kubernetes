@@ -6,9 +6,12 @@ additionalArguments:
   - '--log.level=INFO'
   - '--accesslog=true'
   - '--accesslog.bufferingsize=100'
-  - '--certificatesresolvers.le.acme.email=your-email@yourdomain.com'
-  - '--certificatesresolvers.le.acme.storage=/data/acme.json'
-  - '--certificatesresolvers.le.acme.tlschallenge=true'
+  # '--certificatesresolvers.le.acme.email=your-email@yourdomain.com'
+  # '--certificatesresolvers.le.acme.storage=/data/acme.json'
+  # '--certificatesresolvers.le.acme.tlschallenge=true'
+  #
+  # ACME (Let's Encrypt) is commented out. It is recommended to use cert-manager for certificate management in Kubernetes environments.
+  # See: https://cert-manager.io/
   - '--metrics.prometheus=true'
   - '--metrics.prometheus.addEntryPointsLabels=true'
   - '--metrics.prometheus.addServicesLabels=true'
