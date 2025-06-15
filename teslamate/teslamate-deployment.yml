@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teslamate
+  namespace: teslamate
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "4000"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teslamate
+  template:
+    metadata:
+      labels:
+        app: teslamate
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+        - name: import
+          persistentVolumeClaim:
+            claimName: teslamate-import
+      containers:
+        - name: teslamate
+          image: teslamate/teslamate:latest
+          ports:
+            - containerPort: 4000
+          env:
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: teslamate-secrets
+                  key: ENCRYPTION_KEY
+            - name: DATABASE_USER
+              value: "teslamate"
+            - name: DATABASE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: teslamate-secrets
+                  key: DATABASE_PASS
+            - name: DATABASE_NAME
+              value: "teslamate"
+            - name: DATABASE_HOST
+              value: "teslamate-db"
+            - name: MQTT_HOST
+              value: "mosquitto"
+          volumeMounts:
+            - mountPath: /opt/app/import
+              name: import
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          securityContext:
+            capabilities:
+              drop: ["ALL"]
+      serviceAccountName: teslamate-sa 

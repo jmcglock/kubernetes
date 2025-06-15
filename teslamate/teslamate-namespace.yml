@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: teslamate 
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: teslamate-sa
+  namespace: teslamate
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: teslamate-grafana-sa
+  namespace: teslamate
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: teslamate-db-sa
+  namespace: teslamate
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: teslamate-mosquitto-sa
+  namespace: teslamate
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: teslamate-allow-ingress
+  namespace: teslamate
+spec:
+  podSelector:
+    matchLabels:
+      app: teslamate
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              app: traefik
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: grafana-allow-ingress
+  namespace: teslamate
+spec:
+  podSelector:
+    matchLabels:
+      app: teslamate-grafana
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              app: traefik
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-allow-ingress
+  namespace: teslamate
+spec:
+  podSelector:
+    matchLabels:
+      app: teslamate-db
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: teslamate
+        - podSelector:
+            matchLabels:
+              app: teslamate-grafana
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mosquitto-allow-ingress
+  namespace: teslamate
+spec:
+  podSelector:
+    matchLabels:
+      app: mosquitto
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: teslamate 

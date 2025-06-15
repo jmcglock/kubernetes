@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teslamate-grafana
+  namespace: teslamate
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "3000"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teslamate-grafana
+  template:
+    metadata:
+      labels:
+        app: teslamate-grafana
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 472
+      volumes:
+        - name: grafana-data
+          persistentVolumeClaim:
+            claimName: teslamate-grafana-data
+      containers:
+        - name: grafana
+          image: teslamate/grafana:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_USER
+              value: "teslamate"
+            - name: DATABASE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: teslamate-secrets
+                  key: DATABASE_PASS
+            - name: DATABASE_NAME
+              value: "teslamate"
+            - name: DATABASE_HOST
+              value: "teslamate-db"
+          volumeMounts:
+            - mountPath: /var/lib/grafana
+              name: grafana-data
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 472
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 472:472 /var/lib/grafana"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 472
+          volumeMounts:
+            - name: grafana-data
+              mountPath: /var/lib/grafana
+      serviceAccountName: teslamate-grafana-sa 
