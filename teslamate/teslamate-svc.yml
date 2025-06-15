@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: teslamate
+  namespace: teslamate
+spec:
+  selector:
+    app: teslamate
+  ports:
+    - name: http
+      port: 4000
+      targetPort: 4000
+      protocol: TCP 

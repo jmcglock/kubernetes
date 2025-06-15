@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+  namespace: teslamate
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9234"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1883
+      volumes:
+        - name: mosquitto-conf
+          persistentVolumeClaim:
+            claimName: mosquitto-conf
+        - name: mosquitto-data
+          persistentVolumeClaim:
+            claimName: mosquitto-data
+      containers:
+        - name: mosquitto
+          image: eclipse-mosquitto:2
+          command: ["mosquitto", "-c", "/mosquitto-no-auth.conf"]
+          ports:
+            - containerPort: 1883
+          volumeMounts:
+            - mountPath: /mosquitto/config
+              name: mosquitto-conf
+            - mountPath: /mosquitto/data
+              name: mosquitto-data
+          resources:
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+      serviceAccountName: teslamate-mosquitto-sa 

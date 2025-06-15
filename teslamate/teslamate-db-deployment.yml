@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teslamate-db
+  namespace: teslamate
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9187"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teslamate-db
+  template:
+    metadata:
+      labels:
+        app: teslamate-db
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: teslamate-db
+      containers:
+        - name: postgres
+          image: postgres:17
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "teslamate"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: teslamate-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              value: "teslamate"
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: db-data
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+      serviceAccountName: teslamate-db-sa 

@@ -1,0 +1,14 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: teslamate-ingressroute
+  namespace: teslamate
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`teslamate.demo.com`) # would not recomend exposing this to the public internet
+      kind: Rule
+      services:
+        - name: teslamate
+          port: 4000
