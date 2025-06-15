@@ -42,6 +42,7 @@ This repository includes manifests for the following applications:
 
 ### Utilities
 - **ChangeDetection.io**: Monitor website changes and get notifications
+- **TeslaMate**: A powerful, self-hosted data logger for your Tesla
 
 ## Prerequisites
 
