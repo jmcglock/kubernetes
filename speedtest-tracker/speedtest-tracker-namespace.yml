@@ -4,3 +4,6 @@ metadata:
   name: speedtest-tracker
   labels:
     name: speedtest-tracker
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

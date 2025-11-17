@@ -1,28 +1,19 @@
 globalArguments:
   - '--global.checknewversion=false'
   - '--global.sendanonymoususage=false'
-
 additionalArguments:
   - '--log.level=INFO'
   - '--accesslog=true'
   - '--accesslog.bufferingsize=100'
-  # '--certificatesresolvers.le.acme.email=your-email@yourdomain.com'
-  # '--certificatesresolvers.le.acme.storage=/data/acme.json'
-  # '--certificatesresolvers.le.acme.tlschallenge=true'
-  #
-  # ACME (Let's Encrypt) is commented out. It is recommended to use cert-manager for certificate management in Kubernetes environments.
-  # See: https://cert-manager.io/
   - '--metrics.prometheus=true'
   - '--metrics.prometheus.addEntryPointsLabels=true'
   - '--metrics.prometheus.addServicesLabels=true'
   - '--entryPoints.websecure.http.tls.options=default'
-
 persistence:
   enabled: true
   path: /data
   size: 128Mi
   storageClass: longhorn
-
 deployment:
   enabled: true
   replicas: 2
@@ -33,7 +24,6 @@ deployment:
     prometheus.io/port: "9100"
   additionalContainers: []
   initContainers: []
-
 resources:
   requests:
     cpu: "200m"
@@ -41,20 +31,17 @@ resources:
   limits:
     cpu: "500m"
     memory: "256Mi"
-
 ports:
   web:
     redirectTo: websecure
   websecure:
     tls:
       enabled: true
-
 ingressRoute:
   dashboard:
     enabled: true
     annotations:
       traefik.ingress.kubernetes.io/router.middlewares: traefik-traefik-dashboard-basicauth@kubernetescrd
-
 providers:
   kubernetesCRD:
     enabled: true
@@ -64,7 +51,6 @@ providers:
     enabled: true 
     publishedService:
       enabled: true 
-
 service:
   enabled: true 
   type: LoadBalancer
@@ -78,7 +64,6 @@ service:
     loadBalancerIP: ""
   loadBalancerSourceRanges: []
   externalIPs: []
-
 securityContext:
   capabilities:
     drop:
@@ -87,10 +72,8 @@ securityContext:
   runAsGroup: 65532
   runAsNonRoot: true
   runAsUser: 65532
-
 podSecurityContext:
   fsGroup: 65532
-
 affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:

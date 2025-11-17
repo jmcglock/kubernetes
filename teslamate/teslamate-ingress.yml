@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`teslamate.demo.com`) # would not recomend exposing this to the public internet
+    - match: Host(`teslamate.demo.com`)
       kind: Rule
       services:
         - name: teslamate

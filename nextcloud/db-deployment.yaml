@@ -18,13 +18,14 @@ spec:
         app: nextcloud
         role: db
     spec:
+      serviceAccountName: nextcloud-db-sa
       securityContext:
-        fsGroup: 999 # mysql group
+        fsGroup: 999
       containers:
       - name: nextcloud-db
         image: mariadb:10.5
         securityContext:
-          runAsUser: 999 # mysql user
+          runAsUser: 999
           runAsGroup: 999
           allowPrivilegeEscalation: false
           capabilities:

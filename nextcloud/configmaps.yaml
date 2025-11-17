@@ -6,7 +6,6 @@ metadata:
   labels:
     app: nextcloud
 data:
-  # Configuration for Nextcloud
   nextcloud-config.php: |
     <?php
     $CONFIG = array (
@@ -31,4 +30,3 @@ data:
       'dbuser' => 'nextcloud',
       'installed' => false,
     );
-  # Additional custom configuration can be added here

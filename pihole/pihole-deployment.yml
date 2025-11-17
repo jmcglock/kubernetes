@@ -19,6 +19,7 @@ spec:
       annotations:
         instrumentation.opentelemetry.io/inject-sdk: "false"
     spec:
+      serviceAccountName: pihole-sa
       securityContext:
         fsGroup: 1000
       containers:

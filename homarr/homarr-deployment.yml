@@ -17,6 +17,7 @@ spec:
       labels:
         app: homarr
     spec:
+      serviceAccountName: homarr-sa
       securityContext:
         fsGroup: 1000
       containers:

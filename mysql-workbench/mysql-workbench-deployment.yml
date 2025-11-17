@@ -15,6 +15,7 @@ spec:
       labels:
         app: mysql-workbench
     spec:
+      serviceAccountName: mysql-workbench-sa
       securityContext:
         fsGroup: 1000
       containers:

@@ -15,6 +15,7 @@ spec:
       labels:
         app: smokeping
     spec:
+      serviceAccountName: smokeping-sa
       securityContext:
         fsGroup: 1000
       containers:

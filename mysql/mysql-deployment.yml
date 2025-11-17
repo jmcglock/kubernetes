@@ -16,6 +16,7 @@ spec:
       labels:
         app: mysql
     spec:
+      serviceAccountName: mysql-sa
       containers:
       - name: mysql
         image: mysql:8.0.34

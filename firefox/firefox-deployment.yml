@@ -1,4 +1,3 @@
-# firefox-deployment.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,6 +15,7 @@ spec:
       labels:
         app: firefox
     spec:
+      serviceAccountName: firefox-sa
       securityContext:
         fsGroup: 1000
       containers:

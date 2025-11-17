@@ -31,7 +31,6 @@ spec:
             value: "5"
       containers:
         - name: speedtest-tracker
-          # Official LinuxServer.io image
           image: lscr.io/linuxserver/speedtest-tracker:latest
           imagePullPolicy: Always
           securityContext:
