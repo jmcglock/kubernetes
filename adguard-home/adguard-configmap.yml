@@ -12,7 +12,7 @@ data:
     bind_host: 0.0.0.0
     bind_port: 3000
     beta_bind_port: 0
-    users: []  # Move users to secret
+    users: []
     language: "en"
     theme: "auto"
     dns:

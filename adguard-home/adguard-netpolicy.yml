@@ -11,7 +11,6 @@ spec:
   - Ingress
   - Egress
   ingress:
-  # Allow traffic from Traefik ingress controller
   - from:
     - namespaceSelector:
         matchLabels:
@@ -19,7 +18,6 @@ spec:
     ports:
     - protocol: TCP
       port: 80
-  # Allow DNS queries (if AdGuard is used as DNS server)
   - from:
     - namespaceSelector: {}
     ports:
@@ -28,7 +26,6 @@ spec:
     - protocol: TCP
       port: 53
   egress:
-  # Allow DNS queries to external DNS servers
   - to:
     - namespaceSelector: {}
     ports:
@@ -36,7 +33,6 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
-  # Allow HTTP/HTTPS to internet for blocklist updates
   - to:
     - namespaceSelector: {}
     ports:
@@ -44,6 +40,5 @@ spec:
       port: 80
     - protocol: TCP
       port: 443
-  # Allow all traffic to internet IPs (for DNS resolution and blocklist updates)
   - to:
     - podSelector: {}

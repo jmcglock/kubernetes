@@ -11,8 +11,6 @@ spec:
   - Ingress
   - Egress
   ingress:
-  # Allow MySQL connections from specific namespaces that need database access
-  # Adjust the namespace selectors based on which apps need MySQL
   - from:
     - namespaceSelector:
         matchLabels:
@@ -24,7 +22,6 @@ spec:
     - protocol: TCP
       port: 3306
   egress:
-  # Allow DNS resolution
   - to:
     - namespaceSelector:
         matchLabels:
@@ -34,5 +31,3 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
-  # MySQL typically doesn't need outbound connections
-  # Add specific egress rules if needed for replication or backups

@@ -11,7 +11,6 @@ spec:
   - Ingress
   - Egress
   ingress:
-  # Allow traffic from Traefik ingress controller
   - from:
     - namespaceSelector:
         matchLabels:
@@ -20,7 +19,6 @@ spec:
     - protocol: TCP
       port: 80
   egress:
-  # Allow DNS resolution
   - to:
     - namespaceSelector: {}
     ports:
@@ -28,7 +26,6 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
-  # Allow connections to MySQL database
   - to:
     - podSelector:
         matchLabels:
@@ -36,7 +33,6 @@ spec:
     ports:
     - protocol: TCP
       port: 3306
-  # Allow connections to external MySQL if needed
   - to:
     - namespaceSelector:
         matchLabels:
@@ -44,7 +40,6 @@ spec:
     ports:
     - protocol: TCP
       port: 3306
-  # Allow HTTP/HTTPS for external storage, federation, app store
   - to:
     - namespaceSelector: {}
     ports:
@@ -52,7 +47,6 @@ spec:
       port: 80
     - protocol: TCP
       port: 443
-  # Allow SMTP for email notifications
   - to:
     - namespaceSelector: {}
     ports:
@@ -76,7 +70,6 @@ spec:
   - Ingress
   - Egress
   ingress:
-  # Allow connections from Nextcloud app
   - from:
     - podSelector:
         matchLabels:
@@ -85,7 +78,6 @@ spec:
     - protocol: TCP
       port: 3306
   egress:
-  # Allow DNS resolution
   - to:
     - namespaceSelector:
         matchLabels:
@@ -95,4 +87,3 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
-  # Database doesn't need other egress

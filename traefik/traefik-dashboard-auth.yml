@@ -5,6 +5,4 @@ metadata:
   namespace: traefik
 type: Opaque
 data:
-  # This is a secure hashed password (admin:SecureTraefikPassword)
-  # In production, generate your own with htpasswd: htpasswd -nb admin YOUR_PASSWORD
   users: YWRtaW46JGFwcjEkZ0IvdC4xNFgkZlBGTXlNOGt2OTBuTTdDMHBYZGN2LwotLQo=

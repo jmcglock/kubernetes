@@ -20,7 +20,7 @@ spec:
     spec:
       serviceAccountName: nextcloud-app-sa
       securityContext:
-        fsGroup: 33 # www-data
+        fsGroup: 33
       containers:
       - name: nextcloud
         image: nextcloud:30.0.5-apache

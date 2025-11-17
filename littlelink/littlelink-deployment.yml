@@ -106,4 +106,3 @@ spec:
             - containerPort: 3000
               name: http
       restartPolicy: Always
-# From Techno Tim Little Link Project

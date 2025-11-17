@@ -11,7 +11,6 @@ spec:
   - Ingress
   - Egress
   ingress:
-  # Allow traffic from Traefik ingress controller
   - from:
     - namespaceSelector:
         matchLabels:
@@ -20,7 +19,6 @@ spec:
     - protocol: TCP
       port: 3000
   egress:
-  # Allow DNS resolution
   - to:
     - namespaceSelector: {}
     ports:
@@ -28,7 +26,6 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
-  # Allow all egress for web browsing
   - to:
     - namespaceSelector: {}
     ports:
@@ -36,6 +33,5 @@ spec:
       port: 80
     - protocol: TCP
       port: 443
-  # Allow all egress (browser needs unrestricted internet access)
   - to:
     - podSelector: {}

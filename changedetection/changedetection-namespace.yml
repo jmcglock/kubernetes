@@ -1,4 +1,3 @@
-# changedetection-namespace.yml
 apiVersion: v1
 kind: Namespace
 metadata:

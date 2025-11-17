@@ -11,24 +11,19 @@ spec:
   - Ingress
   - Egress
   ingress:
-  # Allow HTTP traffic from anywhere (ingress controller)
   - ports:
     - protocol: TCP
       port: 80
-  # Allow HTTPS traffic from anywhere (ingress controller)
   - ports:
     - protocol: TCP
       port: 443
-  # Allow dashboard access (internal only, protected by auth)
   - ports:
     - protocol: TCP
       port: 8080
-  # Allow metrics collection
   - ports:
     - protocol: TCP
       port: 9100
   egress:
-  # Allow DNS resolution
   - to:
     - namespaceSelector: {}
     ports:
@@ -36,10 +31,8 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
-  # Allow connections to all services in all namespaces (ingress controller needs this)
   - to:
     - namespaceSelector: {}
-  # Allow HTTPS for cert-manager ACME challenges if needed
   - to:
     - namespaceSelector: {}
     ports:

@@ -11,7 +11,6 @@ spec:
   - Ingress
   - Egress
   ingress:
-  # Allow traffic from Traefik ingress controller
   - from:
     - namespaceSelector:
         matchLabels:
@@ -20,7 +19,6 @@ spec:
     - protocol: TCP
       port: 2368
   egress:
-  # Allow DNS resolution
   - to:
     - namespaceSelector: {}
     ports:
@@ -28,7 +26,6 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
-  # Allow HTTP/HTTPS for external integrations, themes, etc.
   - to:
     - namespaceSelector: {}
     ports:
@@ -36,7 +33,6 @@ spec:
       port: 80
     - protocol: TCP
       port: 443
-  # Allow SMTP for email notifications (port 25, 465, 587)
   - to:
     - namespaceSelector: {}
     ports:
