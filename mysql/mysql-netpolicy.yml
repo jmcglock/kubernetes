@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mysql-netpolicy
+  namespace: mysql
+spec:
+  podSelector:
+    matchLabels:
+      app: mysql
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow MySQL connections from specific namespaces that need database access
+  # Adjust the namespace selectors based on which apps need MySQL
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: nextcloud
+    - namespaceSelector:
+        matchLabels:
+          name: mysql-workbench
+    ports:
+    - protocol: TCP
+      port: 3306
+  egress:
+  # Allow DNS resolution
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # MySQL typically doesn't need outbound connections
+  # Add specific egress rules if needed for replication or backups

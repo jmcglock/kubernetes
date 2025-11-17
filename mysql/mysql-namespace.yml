@@ -3,4 +3,7 @@ kind: Namespace
 metadata:
   name: mysql
   labels:
-    name: mysql 
+    name: mysql
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted 

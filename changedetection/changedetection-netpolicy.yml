@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: changedetection-netpolicy
+  namespace: changedetection
+spec:
+  podSelector:
+    matchLabels:
+      app: changedetection
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from Traefik ingress controller
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: traefik
+    ports:
+    - protocol: TCP
+      port: 5000
+  egress:
+  # Allow DNS resolution
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow HTTP/HTTPS to internet for website monitoring
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+  # Allow all egress for monitoring any websites
+  - to:
+    - podSelector: {}

@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: flame-netpolicy
+  namespace: flame
+spec:
+  podSelector:
+    matchLabels:
+      app: flame
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from Traefik ingress controller
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: traefik
+    ports:
+    - protocol: TCP
+      port: 5005
+  egress:
+  # Allow DNS resolution
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow HTTP/HTTPS for dashboard functionality (fetching icons, weather, etc.)
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443

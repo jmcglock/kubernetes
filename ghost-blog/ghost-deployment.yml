@@ -15,6 +15,7 @@ spec:
       labels:
         app: ghost
     spec:
+      serviceAccountName: ghost-sa
       securityContext:
         fsGroup: 1000
         runAsUser: 1000

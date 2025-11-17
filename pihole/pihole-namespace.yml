@@ -3,4 +3,7 @@ kind: Namespace
 metadata:
   name: pihole
   labels:
-    name: pihole 
+    name: pihole
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted 

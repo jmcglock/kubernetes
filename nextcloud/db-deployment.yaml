@@ -18,6 +18,7 @@ spec:
         app: nextcloud
         role: db
     spec:
+      serviceAccountName: nextcloud-db-sa
       securityContext:
         fsGroup: 999 # mysql group
       containers:

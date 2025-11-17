@@ -18,6 +18,7 @@ spec:
         app: nextcloud
         role: app
     spec:
+      serviceAccountName: nextcloud-app-sa
       securityContext:
         fsGroup: 33 # www-data
       containers:

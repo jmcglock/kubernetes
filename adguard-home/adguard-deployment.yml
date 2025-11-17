@@ -19,6 +19,7 @@ spec:
       labels:
         app: adguard-home
     spec:
+      serviceAccountName: adguard-home-sa
       securityContext:
         fsGroup: 1000
       containers:

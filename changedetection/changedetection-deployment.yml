@@ -16,6 +16,7 @@ spec:
       labels:
         app: changedetection
     spec:
+      serviceAccountName: changedetection-sa
       securityContext:
         fsGroup: 1000
       containers:

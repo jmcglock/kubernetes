@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mysql-workbench-netpolicy
+  namespace: mysql-workbench
+spec:
+  podSelector:
+    matchLabels:
+      app: mysql-workbench
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from Traefik ingress controller
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: traefik
+    ports:
+    - protocol: TCP
+      port: 3000
+  egress:
+  # Allow DNS resolution
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow connections to MySQL servers
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: mysql
+    ports:
+    - protocol: TCP
+      port: 3306
+  # Allow connections to external MySQL servers if needed
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 3306

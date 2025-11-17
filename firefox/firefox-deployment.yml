@@ -16,6 +16,7 @@ spec:
       labels:
         app: firefox
     spec:
+      serviceAccountName: firefox-sa
       securityContext:
         fsGroup: 1000
       containers:

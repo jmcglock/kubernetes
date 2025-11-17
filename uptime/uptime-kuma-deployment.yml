@@ -17,6 +17,7 @@ spec:
       labels:
         app: uptime
     spec:
+      serviceAccountName: uptime-kuma-sa
       securityContext:
         fsGroup: 1001
       volumes:

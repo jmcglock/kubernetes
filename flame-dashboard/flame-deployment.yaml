@@ -17,6 +17,7 @@ spec:
       labels:
         app: flame
     spec:
+      serviceAccountName: flame-sa
       securityContext:
         fsGroup: 1000
       containers:

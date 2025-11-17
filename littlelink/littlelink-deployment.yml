@@ -15,6 +15,7 @@ spec:
       labels:
         app: littlelink
     spec:
+      serviceAccountName: littlelink-sa
       securityContext:
         fsGroup: 1000
       containers:
