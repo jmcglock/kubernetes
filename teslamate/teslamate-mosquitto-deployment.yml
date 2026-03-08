@@ -28,7 +28,7 @@ spec:
             claimName: mosquitto-data
       containers:
         - name: mosquitto
-          image: eclipse-mosquitto:2
+          image: eclipse-mosquitto:2.0.22
           command: ["mosquitto", "-c", "/mosquitto-no-auth.conf"]
           ports:
             - containerPort: 1883

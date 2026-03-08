@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: adguard-home
-        image: adguard/adguardhome:v0.107.41
+        image: adguard/adguardhome:v0.107.72
         imagePullPolicy: IfNotPresent
         env:
         - name: AGH_CONFIG

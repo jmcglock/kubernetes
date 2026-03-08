@@ -25,7 +25,7 @@ spec:
             claimName: teslamate-grafana-data
       containers:
         - name: grafana
-          image: teslamate/grafana:latest
+          image: teslamate/grafana:3.0.0
           ports:
             - containerPort: 3000
           env:
@@ -55,7 +55,7 @@ spec:
             runAsUser: 472
       initContainers:
         - name: fix-permissions
-          image: busybox
+          image: busybox:1.37.0
           command: ["sh", "-c", "chown -R 472:472 /var/lib/grafana"]
           securityContext:
             runAsNonRoot: true
