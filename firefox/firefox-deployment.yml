@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: firefox
-        image: jlesage/firefox:v1.19.1
+        image: jlesage/firefox:v26.02.3
         securityContext:
           runAsUser: 1000
           runAsNonRoot: true

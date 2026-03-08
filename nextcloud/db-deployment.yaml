@@ -23,7 +23,7 @@ spec:
         fsGroup: 999
       containers:
       - name: nextcloud-db
-        image: mariadb:10.5
+        image: mariadb:11.8.6
         securityContext:
           runAsUser: 999
           runAsGroup: 999

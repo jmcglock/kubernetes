@@ -25,7 +25,7 @@ spec:
             claimName: teslamate-import
       containers:
         - name: teslamate
-          image: teslamate/teslamate:latest
+          image: teslamate/teslamate:3.0.0
           ports:
             - containerPort: 4000
           env:

@@ -22,16 +22,19 @@ spec:
       serviceAccountName: adguard-home-sa
       securityContext:
         fsGroup: 1000
+      initContainers:
+      - name: config-init
+        image: busybox:1.37.0
+        command: ['sh', '-c', 'cp /config-template/AdGuardHome.yaml /opt/adguardhome/conf/AdGuardHome.yaml']
+        volumeMounts:
+        - name: adguard-config-template
+          mountPath: /config-template
+        - name: adguard-conf-dir
+          mountPath: /opt/adguardhome/conf
       containers:
       - name: adguard-home
-        image: adguard/adguardhome:v0.107.41
+        image: adguard/adguardhome:v0.107.72
         imagePullPolicy: IfNotPresent
-        env:
-        - name: AGH_CONFIG
-          valueFrom:
-            configMapKeyRef:
-              name: adguard-config
-              key: AdGuardHome.yaml
         ports:
         - containerPort: 53
           name: dns-udp
@@ -72,12 +75,14 @@ spec:
         volumeMounts:
         - name: adguard-data
           mountPath: /opt/adguardhome/work
-        - name: adguard-config
+        - name: adguard-conf-dir
           mountPath: /opt/adguardhome/conf
       volumes:
       - name: adguard-data
         persistentVolumeClaim:
           claimName: adguard-pvc
-      - name: adguard-config
+      - name: adguard-conf-dir
+        emptyDir: {}
+      - name: adguard-config-template
         configMap:
           name: adguard-config

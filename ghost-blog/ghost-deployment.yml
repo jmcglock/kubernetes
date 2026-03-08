@@ -22,7 +22,7 @@ spec:
         runAsNonRoot: true
       containers:
       - name: ghost
-        image: ghost:5.109.0-alpine
+        image: ghost:6.21.0-alpine3.23
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

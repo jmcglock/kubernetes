@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: smokeping
-        image: linuxserver/smokeping:latest
+        image: linuxserver/smokeping:2.9.0
         imagePullPolicy: Always
         securityContext:
           runAsUser: 1000
