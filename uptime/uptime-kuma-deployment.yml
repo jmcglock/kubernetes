@@ -26,7 +26,7 @@ spec:
             claimName: uptime
       containers:
       - name: uptime
-        image: louislam/uptime-kuma:2.2.0
+        image: louislam/uptime-kuma:2.2.1
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 1001
