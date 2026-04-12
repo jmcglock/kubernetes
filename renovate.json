@@ -5,8 +5,8 @@
     "docker:enableMajor"
   ],
   "kubernetes": {
-    "fileMatch": [
-      "\\.ya?ml$"
+    "managerFilePatterns": [
+      "/\\.ya?ml$/"
     ]
   }
 }
