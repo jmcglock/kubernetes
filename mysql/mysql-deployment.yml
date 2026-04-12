@@ -19,7 +19,7 @@ spec:
       serviceAccountName: mysql-sa
       containers:
       - name: mysql
-        image: mysql:8.4.8
+        image: mysql:9.6.0
         env:
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
