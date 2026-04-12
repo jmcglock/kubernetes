@@ -36,7 +36,7 @@ spec:
             mountPath: /var/lib/postgresql/data/pgdata
       containers:
       - name: postgres
-        image: postgres:15.17
+        image: postgres:18.3
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 999
