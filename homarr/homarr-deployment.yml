@@ -22,7 +22,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: homarr
-        image: ghcr.io/ajnart/homarr:0.16.0
+        image: ghcr.io/ajnart/homarr:0.16.1
         securityContext:
           runAsUser: 1000
           runAsNonRoot: true
