@@ -33,7 +33,7 @@ spec:
           mountPath: /opt/adguardhome/conf
       containers:
       - name: adguard-home
-        image: adguard/adguardhome:v0.107.73
+        image: adguard/adguardhome:v0.107.74
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 53
