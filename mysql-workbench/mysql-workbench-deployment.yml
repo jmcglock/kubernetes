@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: mysql-workbench
-        image: lscr.io/linuxserver/mysql-workbench:8.0.46
+        image: lscr.io/linuxserver/mysql-workbench:8.0.47
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
