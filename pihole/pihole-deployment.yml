@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: pihole
-        image: pihole/pihole:2026.04.0
+        image: pihole/pihole:2026.04.1
         securityContext:
           runAsUser: 1000
           runAsNonRoot: true
