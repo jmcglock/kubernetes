@@ -23,7 +23,7 @@ spec:
         fsGroup: 33
       containers:
       - name: nextcloud
-        image: nextcloud:33.0.2-apache
+        image: nextcloud:33.0.3-apache
         securityContext:
           runAsUser: 33
           runAsGroup: 33
