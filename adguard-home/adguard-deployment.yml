@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       initContainers:
       - name: config-init
-        image: busybox:1.37.0
+        image: busybox:1.38.0
         command: ['sh', '-c', 'cp /config-template/AdGuardHome.yaml /opt/adguardhome/conf/AdGuardHome.yaml']
         volumeMounts:
         - name: adguard-config-template
