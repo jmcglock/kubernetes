@@ -29,13 +29,6 @@ resources:
     cpu: "500m"
     memory: "256Mi"
 ports:
-  web:
-    http:
-      redirections:
-        entryPoint:
-          to: websecure
-          scheme: https
-          permanent: true
   websecure:
     http:
       tls:
