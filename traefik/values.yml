@@ -1,6 +1,6 @@
-globalArguments:
-  - '--global.checknewversion=false'
-  - '--global.sendanonymoususage=false'
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
 additionalArguments:
   - '--log.level=INFO'
   - '--accesslog=true'
@@ -10,10 +10,7 @@ additionalArguments:
   - '--metrics.prometheus.addServicesLabels=true'
   - '--entryPoints.websecure.http.tls.options=default'
 persistence:
-  enabled: true
-  path: /data
-  size: 128Mi
-  storageClass: longhorn
+  enabled: false
 deployment:
   enabled: true
   replicas: 2
@@ -33,10 +30,16 @@ resources:
     memory: "256Mi"
 ports:
   web:
-    redirectTo: websecure
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
   websecure:
-    tls:
-      enabled: true
+    http:
+      tls:
+        enabled: true
 ingressRoute:
   dashboard:
     enabled: true
@@ -45,8 +48,8 @@ ingressRoute:
 providers:
   kubernetesCRD:
     enabled: true
-    ingressClass: traefik-external
     namespaces: []
+    allowExternalNameServices: true
   kubernetesIngress:
     enabled: true 
     publishedService:
