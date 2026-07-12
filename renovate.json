@@ -8,5 +8,12 @@
     "managerFilePatterns": [
       "/\\.ya?ml$/"
     ]
-  }
+  },
+  "packageRules": [
+    {
+      "description": "Auto-merge minor and patch updates",
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    }
+  ]
 }
