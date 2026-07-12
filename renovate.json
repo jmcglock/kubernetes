@@ -9,6 +9,7 @@
       "/\\.ya?ml$/"
     ]
   },
+  "ignoreTests": true,
   "packageRules": [
     {
       "description": "Auto-merge minor and patch updates",
