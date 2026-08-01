@@ -2,19 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "docker:enableMajor"
+    "docker:enableMajor",
+    ":automergeAll",
+    ":semanticCommits"
   ],
-  "kubernetes": {
-    "managerFilePatterns": [
-      "/\\.ya?ml$/"
-    ]
-  },
-  "ignoreTests": true,
-  "packageRules": [
-    {
-      "description": "Auto-merge minor and patch updates",
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true
-    }
-  ]
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "platformAutomerge": true
 }
