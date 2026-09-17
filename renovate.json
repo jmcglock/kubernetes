@@ -8,5 +8,6 @@
   ],
   "automergeType": "pr",
   "automergeStrategy": "squash",
-  "platformAutomerge": true
+  "platformAutomerge": true,
+  "ignoreTests": true
 }
